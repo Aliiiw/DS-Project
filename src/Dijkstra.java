@@ -3,6 +3,53 @@ import java.util.LinkedList;
 public class Dijkstra {
 
 
+    static class MinHeap{
+        int allCapacity;
+        int size;
+        HeapNode[] minHeaps;
+        int[] indexes;
+
+        public MinHeap(int allCapacity) {
+            this.allCapacity = allCapacity;
+            this.minHeaps = new HeapNode[allCapacity + 1];
+            this.indexes = new int[allCapacity];
+
+            minHeaps[0] = new HeapNode();                       //initial kardan minHeap
+            minHeaps[0].vertex = -1;
+            minHeaps[0].distance = Integer.MIN_VALUE;
+            this.size = 0;
+        }
+
+
+        public void maxHeapify(int position){
+            int parentIndex = position / 2;
+
+            while (position > 0 && minHeaps[parentIndex].distance > minHeaps[position].distance){   //jaye pedar va farzand avaz mishe
+                HeapNode node = minHeaps[position];
+                HeapNode parentNode = minHeaps[parentIndex];
+                swapNodes(position, parentIndex);
+                position = parentIndex;
+                parentIndex = parentIndex / 2;
+            }
+        }
+
+        public void insertToMinHeap(HeapNode node){
+            this.size++;
+            int index = this.size;
+            minHeaps[index] = node;
+            indexes[node.vertex] = index;
+            maxHeapify(index);
+        }
+
+
+    }
+
+
+
+
+
+
+
     static class Map{
         int vertices;
         LinkedList<Node>[] neighbors;
@@ -69,7 +116,7 @@ public class Dijkstra {
 
         public void decreaseKeyValue(MinHeap minHeap, int newKeyValue, int vertexDestination){
             int index = minHeap.indexes[vertexDestination];     //jayi ke bayad update beshe ro indexesh ro dar miarim
-            HeapNode node = minHeap.minHeap[index];
+            HeapNode node = minHeap.minHeaps[index];
             node.distance = newKeyValue;
             minHeap.MaxHeapify(index);
         }
