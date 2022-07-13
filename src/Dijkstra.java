@@ -1,3 +1,10 @@
+/*
+Goal : To find the shortest way between source vertex and other vertexes in direction Graph
+Author: Ali Rahimi
+Student Number : 9932120
+
+*/
+
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -76,6 +83,7 @@ public class Dijkstra {
 
                 indexes[smallestNodeInHeap.vertex] = value;
                 indexes[nodeValue.vertex] = smallestValue;
+
                 swapNodes(value, smallestValue);
                 downHeapify(smallestValue);
             }
@@ -210,10 +218,10 @@ public class Dijkstra {
             System.out.print("Please enter data Number " + counter + " in form (sorce destination weight) : ");
             String data = input.nextLine();
 
-            String[] splited = data.split(" ");
-            int _source = Integer.parseInt(splited[0]);
-            int _destination = Integer.parseInt(splited[1]);
-            int _weight = Integer.parseInt(splited[2]);
+            String[] splinted = data.split(" ");
+            int _source = Integer.parseInt(splinted[0]);
+            int _destination = Integer.parseInt(splinted[1]);
+            int _weight = Integer.parseInt(splinted[2]);
             map.addNodeToMap(_source, _destination, _weight);
             counter++;
         }
