@@ -21,6 +21,52 @@ public class Dijkstra {
             neighbors[source].addFirst(node);                               //be aval linked list ezaf mishe
 
         }
+        public void findMinimumDistance(int source){
+            int maximumValue = Integer.MAX_VALUE;
+            boolean[] visited = new boolean[vertices];
+            HeapNode[] heapNodes = new HeapNode[vertices];                 //heap node dorost mikonim ta ras haro negah darim
+
+            for (int i = 0; i < vertices; i++){                           //meghdar dehi avalie hame bi nahayat bashe
+                heapNodes[i] = new HeapNode();
+                heapNodes[i].vertex = i;
+                heapNodes[i].distance = maximumValue;
+            }
+
+            heapNodes[source].distance = 0;                             //ras source faselash ba khodesh sefre
+
+            MinHeap minHeap = new MinHeap(vertices);                   //hame ras haro mirizim tooye min heap
+
+            for (int i = 0; i < vertices; i++){
+                minHeap.insertToMinHeap(heapNodes[i]);
+            }
+
+            while (!minHeap.isEmpty()){                             //minimum ro dar miarim inja
+                HeapNode minimumNode = minHeap.getMinimumNode();
+
+                int minimumVertex = minimumNode.vertex;
+                visited[minimumVertex] = true;                     //peydash kardim pass true mikonim meghdar visit boodanesh ro
+
+                LinkedList<Node> nodes = neighbors[minimumVertex];
+
+                for (Node node : nodes){
+                    int destination = node.destination;
+
+                    while (!visited[destination]){             //hanuz nadide bashim check mikonim niaz dasht update mikonim(decrease key)
+
+                        int newKeyValue = heapNodes[minimumVertex].distance + node.weight;
+                        int oldKeyValue = heapNodes[destination].distance;
+
+                        if (oldKeyValue > newKeyValue){
+                            decreaseKeyValue(minHeap, newKeyValue, destination);
+                            heapNodes[destination].distance = newKeyValue;
+                        }
+
+
+                    }
+                }
+
+            }
+        }
 
     }
 
