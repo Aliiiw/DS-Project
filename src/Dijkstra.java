@@ -20,6 +20,16 @@ public class Dijkstra {
             this.size = 0;
         }
 
+        public void swapNodes(int node1, int node2){
+            HeapNode temp = minHeaps[node1];
+            minHeaps[node1] = minHeaps[node2];
+            minHeaps[node2] = temp;
+        }
+
+        public boolean isEmpty(){
+            return this.size == 0;
+        }
+
 
         public void maxHeapify(int position){
             int parentIndex = position / 2;
