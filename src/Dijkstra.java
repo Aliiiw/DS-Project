@@ -1,6 +1,8 @@
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class Dijkstra {
+    public static Scanner input = new Scanner(System.in);
 
     static class MinHeap{
         int allCapacity;
@@ -166,7 +168,7 @@ public class Dijkstra {
         }
 
         public void showMap(HeapNode[] heapNodes, int source){
-
+            System.out.println("\n");
             for (int i = 0; i < vertices; i++) {
                 System.out.println("Start from " + source + " to vertex " + i + " Minimum Distance " + heapNodes[i].distance);
             }
@@ -191,20 +193,31 @@ public class Dijkstra {
     }
 
     public static void main(String[] args) {
-        int vertices = 5;
-        Map map = new Map(vertices);
-        int sourceVertex = 0;
-        map.addNodeToMap(0, 1, 10);
-        map.addNodeToMap(0, 4, 5);
-        map.addNodeToMap(1, 2, 1);
-        map.addNodeToMap(1, 4, 2);
-        map.addNodeToMap(2, 3, 4);
-        map.addNodeToMap(3, 0, 7);
-        map.addNodeToMap(3, 2, 6);
-        map.addNodeToMap(4, 1, 3);
-        map.addNodeToMap(4, 2, 9);
-        map.addNodeToMap(4, 3, 2);
 
-        map.findMinimumDistance(sourceVertex);
+        System.out.print("Please enter the number of Vertices : ");
+        int vertices = input.nextInt();
+
+        System.out.print("Please enter the number of Lines : ");
+        int lines = input.nextInt();
+
+        System.out.print("Please enter the source Vertex: ");
+        int source = input.nextInt();
+        input.nextLine();
+
+        Map map = new Map(vertices);
+        int counter = 1;
+        for (int i = 0; i < lines; i++){
+            System.out.print("Please enter data Number " + counter + " in form (sorce destination weight) : ");
+            String data = input.nextLine();
+
+            String[] splited = data.split(" ");
+            int _source = Integer.parseInt(splited[0]);
+            int _destination = Integer.parseInt(splited[1]);
+            int _weight = Integer.parseInt(splited[2]);
+            map.addNodeToMap(_source, _destination, _weight);
+            counter++;
+        }
+
+        map.findMinimumDistance(source);
     }
 }
