@@ -30,6 +30,39 @@ public class Dijkstra {
             return this.size == 0;
         }
 
+        public void downHeapify(int value){
+            int smallestNode = value;
+            int rightChildIndex = 2 * value + 1;
+            int leftChildIndex = 2 * value;
+
+            if (leftChildIndex < size && minHeaps[smallestNode].distance > minHeaps[rightChildIndex].distance){
+                smallestNode = rightChildIndex;
+            }
+
+            if (smallestNode != value){
+                HeapNode _smallestNode = minHeaps[smallestNode];
+                HeapNode nodeValue = minHeaps[value];
+
+                indexes[_smallestNode.vertex] = value;
+                indexes[nodeValue.vertex] = smallestNode;
+
+                swapNodes(value, smallestNode);
+                downHeapify(smallestNode);
+            }
+
+        }
+
+        public HeapNode getMinimumNode(){
+            HeapNode minimumNode = minHeaps[1];
+            HeapNode lastNodeInHeap = minHeaps[size];
+            indexes[lastNodeInHeap.vertex] = 1;               //node akhar ro miarim balaye hame
+            minHeaps[1] = lastNodeInHeap;
+            minHeaps[size] = null;
+            downHeapify(1);
+            size--;
+            return minimumNode;
+        }
+
 
         public void maxHeapify(int position){
             int parentIndex = position / 2;
