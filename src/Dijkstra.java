@@ -2,175 +2,175 @@ import java.util.LinkedList;
 
 public class Dijkstra {
 
-
     static class MinHeap{
         int allCapacity;
         int size;
         HeapNode[] minHeaps;
-        int[] indexes;
+        int [] indexes;
 
-        public MinHeap(int allCapacity) {
-            this.allCapacity = allCapacity;
-            this.minHeaps = new HeapNode[allCapacity + 1];
-            this.indexes = new int[allCapacity];
 
-            minHeaps[0] = new HeapNode();                       //initial kardan minHeap
-            minHeaps[0].vertex = -1;
+        public MinHeap(int capacity) {
+            this.allCapacity = capacity;
+            minHeaps = new HeapNode[capacity + 1];
+            indexes = new int[capacity];
+            minHeaps[0] = new HeapNode();                      //initial kardan minHeap
             minHeaps[0].distance = Integer.MIN_VALUE;
-            this.size = 0;
+            minHeaps[0].vertex = -1;
+            size = 0;
         }
 
-        public void swapNodes(int node1, int node2){
-            HeapNode temp = minHeaps[node1];
-            minHeaps[node1] = minHeaps[node2];
-            minHeaps[node2] = temp;
+        public void insertToMinHeap(HeapNode node) {
+            size++;
+            int index = size;
+            minHeaps[index] = node;
+            indexes[node.vertex] = index;
+            maxHeapify(index);
         }
 
-        public boolean isEmpty(){
-            return this.size == 0;
-        }
+        public void maxHeapify(int position) {
+            int parentIndex = position / 2;
+            int currentIndex = position;
 
-        public void downHeapify(int value){
-            int smallestNode = value;
-            int rightChildIndex = 2 * value + 1;
-            int leftChildIndex = 2 * value;
+            while (currentIndex > 0 && minHeaps[parentIndex].distance > minHeaps[currentIndex].distance) {   //jaye pedar va farzand avaz mishe
+                HeapNode currentNode = minHeaps[currentIndex];
+                HeapNode parentNode = minHeaps[parentIndex];
 
-            if (leftChildIndex < size && minHeaps[smallestNode].distance > minHeaps[rightChildIndex].distance){
-                smallestNode = rightChildIndex;
+
+                indexes[currentNode.vertex] = parentIndex;
+                indexes[parentNode.vertex] = currentIndex;
+                swapNodes(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+                parentIndex =  parentIndex / 2;
             }
-
-            if (smallestNode != value){
-                HeapNode _smallestNode = minHeaps[smallestNode];
-                HeapNode nodeValue = minHeaps[value];
-
-                indexes[_smallestNode.vertex] = value;
-                indexes[nodeValue.vertex] = smallestNode;
-
-                swapNodes(value, smallestNode);
-                downHeapify(smallestNode);
-            }
-
         }
 
-        public HeapNode getMinimumNode(){
+        public HeapNode getMinimumNode() {
             HeapNode minimumNode = minHeaps[1];
-            HeapNode lastNodeInHeap = minHeaps[size];
-            indexes[lastNodeInHeap.vertex] = 1;               //node akhar ro miarim balaye hame
-            minHeaps[1] = lastNodeInHeap;
+            HeapNode lastNodeHeap = minHeaps[size];
+
+            indexes[lastNodeHeap.vertex] = 1;                        //node akhar ro miarim balaye hame
+            minHeaps[1] = lastNodeHeap;
             minHeaps[size] = null;
             downHeapify(1);
             size--;
             return minimumNode;
         }
 
+        public void downHeapify(int value) {
+            int smallestValue = value;
 
-        public void maxHeapify(int position){
-            int parentIndex = position / 2;
+            int rightChildIndex = 2 * value + 1;
+            int leftChildIndex = 2 * value;
+            if (leftChildIndex < size && minHeaps[smallestValue].distance > minHeaps[leftChildIndex].distance) {
+                smallestValue = leftChildIndex;
+            }
+            if (rightChildIndex < size && minHeaps[smallestValue].distance > minHeaps[rightChildIndex].distance) {
+                smallestValue = rightChildIndex;
+            }
+            if (smallestValue != value) {
 
-            while (position > 0 && minHeaps[parentIndex].distance > minHeaps[position].distance){   //jaye pedar va farzand avaz mishe
-                HeapNode node = minHeaps[position];
-                HeapNode parentNode = minHeaps[parentIndex];
-                swapNodes(position, parentIndex);
-                position = parentIndex;
-                parentIndex = parentIndex / 2;
+                HeapNode smallestNodeInHeap = minHeaps[smallestValue];
+                HeapNode nodeValue = minHeaps[value];
+
+                indexes[smallestNodeInHeap.vertex] = value;
+                indexes[nodeValue.vertex] = smallestValue;
+                swapNodes(value, smallestValue);
+                downHeapify(smallestValue);
             }
         }
 
-        public void insertToMinHeap(HeapNode node){
-            this.size++;
-            int index = this.size;
-            minHeaps[index] = node;
-            indexes[node.vertex] = index;
-            maxHeapify(index);
+        public void swapNodes(int node1, int node2) {
+            HeapNode temp = minHeaps[node1];
+            minHeaps[node1] = minHeaps[node2];
+            minHeaps[node2] = temp;
         }
 
-
+        public boolean isEmpty() {
+            return size == 0;
+        }
     }
 
-
-
-
-
-
-
-    static class Map{
+    static class Map {
         int vertices;
         LinkedList<Node>[] neighbors;
 
-        public Map(int vertices) {
+        Map(int vertices) {
             this.vertices = vertices;
-            this.neighbors = new LinkedList[vertices];
-
-            for (int i = 0; i < vertices; i++){
+            neighbors = new LinkedList[vertices];
+            for (int i = 0; i < vertices; i++) {
                 neighbors[i] = new LinkedList<>();
             }
         }
 
-        public void addNodeToMap(int source, int destination, int weight){
+        public void addNodeToMap(int source, int destination, int weight) {     //be aval linked list ezaf mishe
             Node node = new Node(source, destination, weight);
-            neighbors[source].addFirst(node);                               //be aval linked list ezaf mishe
-
+            neighbors[source].addFirst(node);
         }
-        public void findMinimumDistance(int source){
-            int maximumValue = Integer.MAX_VALUE;
-            boolean[] visited = new boolean[vertices];
-            HeapNode[] heapNodes = new HeapNode[vertices];                 //heap node dorost mikonim ta ras haro negah darim
 
-            for (int i = 0; i < vertices; i++){                           //meghdar dehi avalie hame bi nahayat bashe
+        public void findMinimumDistance(int source){
+            int maxValue = Integer.MAX_VALUE;
+            boolean[] visited = new boolean[vertices];
+            HeapNode [] heapNodes = new HeapNode[vertices];         //heap node dorost mikonim ta ras haro negah darim
+
+            for (int i = 0; i < vertices; i++) {                   //meghdar dehi avalie hame bi nahayat bashe
                 heapNodes[i] = new HeapNode();
                 heapNodes[i].vertex = i;
-                heapNodes[i].distance = maximumValue;
+                heapNodes[i].distance = maxValue;
             }
 
-            heapNodes[source].distance = 0;                             //ras source faselash ba khodesh sefre
 
-            MinHeap minHeap = new MinHeap(vertices);                   //hame ras haro mirizim tooye min heap
+            heapNodes[source].distance = 0;                       //ras source faselash ba khodesh sefre
 
-            for (int i = 0; i < vertices; i++){
+            MinHeap minHeap = new MinHeap(vertices);             //hame ras haro mirizim tooye min heap
+
+            for (int i = 0; i < vertices; i++) {
                 minHeap.insertToMinHeap(heapNodes[i]);
             }
 
-            while (!minHeap.isEmpty()){                             //minimum ro dar miarim inja
-                HeapNode minimumNode = minHeap.getMinimumNode();
+            while(!minHeap.isEmpty()){                          //minimum ro dar miarim inja
 
-                int minimumVertex = minimumNode.vertex;
-                visited[minimumVertex] = true;                     //peydash kardim pass true mikonim meghdar visit boodanesh ro
+                HeapNode extractedNode = minHeap.getMinimumNode();
 
-                LinkedList<Node> nodes = neighbors[minimumVertex];
+                int extractedVertex = extractedNode.vertex;
+                visited[extractedVertex] = true;                     //peydash kardim pass true mikonim meghdar visit boodanesh ro
 
-                for (Node node : nodes){
+
+                LinkedList<Node> nodes = neighbors[extractedVertex];
+
+                for (Node node : nodes) {
                     int destination = node.destination;
 
-                    while (!visited[destination]){             //hanuz nadide bashim check mikonim niaz dasht update mikonim(decrease key)
+                    if (!visited[destination]) {                      //hanuz nadide bashim check mikonim niaz dasht update mikonim(decrease key)
+                        int newKeyValue = heapNodes[extractedVertex].distance + node.weight;
+                        int currentKey = heapNodes[destination].distance;
 
-                        int newKeyValue = heapNodes[minimumVertex].distance + node.weight;
-                        int oldKeyValue = heapNodes[destination].distance;
-
-                        if (oldKeyValue > newKeyValue){
-                            decreaseKeyValue(minHeap, newKeyValue, destination);
+                        if (currentKey > newKeyValue) {
+                            decreaseKey(minHeap, newKeyValue, destination);
                             heapNodes[destination].distance = newKeyValue;
                         }
                     }
                 }
             }
+
             showMap(heapNodes, source);
         }
 
+        public void decreaseKey(MinHeap minHeap, int newKeyValue, int vertex){
 
-        public void decreaseKeyValue(MinHeap minHeap, int newKeyValue, int vertexDestination){
-            int index = minHeap.indexes[vertexDestination];     //jayi ke bayad update beshe ro indexesh ro dar miarim
+
+            int index = minHeap.indexes[vertex];                          //jayi ke bayad update beshe ro indexesh ro dar miarim
+
             HeapNode node = minHeap.minHeaps[index];
             node.distance = newKeyValue;
-            minHeap.MaxHeapify(index);
+            minHeap.maxHeapify(index);
         }
 
         public void showMap(HeapNode[] heapNodes, int source){
 
-            for (int i = 0; i < vertices; i++){
-                System.out.println("Start Vertex " + source + "Distance To " + i + " is : " + heapNodes[i].distance);
+            for (int i = 0; i < vertices; i++) {
+                System.out.println("Start from " + source + " to vertex " + i + " Minimum Distance " + heapNodes[i].distance);
             }
         }
-
     }
 
     static class HeapNode{
@@ -178,7 +178,7 @@ public class Dijkstra {
         int distance;
     }
 
-    static class Node{
+    static class Node {
         int source;
         int destination;
         int weight;
@@ -188,6 +188,23 @@ public class Dijkstra {
             this.destination = destination;
             this.weight = weight;
         }
+    }
 
+    public static void main(String[] args) {
+        int vertices = 5;
+        Map map = new Map(vertices);
+        int sourceVertex = 0;
+        map.addNodeToMap(0, 1, 10);
+        map.addNodeToMap(0, 4, 5);
+        map.addNodeToMap(1, 2, 1);
+        map.addNodeToMap(1, 4, 2);
+        map.addNodeToMap(2, 3, 4);
+        map.addNodeToMap(3, 0, 7);
+        map.addNodeToMap(3, 2, 6);
+        map.addNodeToMap(4, 1, 3);
+        map.addNodeToMap(4, 2, 9);
+        map.addNodeToMap(4, 3, 2);
+
+        map.findMinimumDistance(sourceVertex);
     }
 }
