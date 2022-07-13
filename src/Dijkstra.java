@@ -60,11 +60,24 @@ public class Dijkstra {
                             decreaseKeyValue(minHeap, newKeyValue, destination);
                             heapNodes[destination].distance = newKeyValue;
                         }
-
-
                     }
                 }
+            }
+            showMap(heapNodes, source);
+        }
 
+
+        public void decreaseKeyValue(MinHeap minHeap, int newKeyValue, int vertexDestination){
+            int index = minHeap.indexes[vertexDestination];     //jayi ke bayad update beshe ro indexesh ro dar miarim
+            HeapNode node = minHeap.minHeap[index];
+            node.distance = newKeyValue;
+            minHeap.MaxHeapify(index);
+        }
+
+        public void showMap(HeapNode[] heapNodes, int source){
+
+            for (int i = 0; i < vertices; i++){
+                System.out.println("Start Vertex " + source + "Distance To " + i + " is : " + heapNodes[i].distance);
             }
         }
 
