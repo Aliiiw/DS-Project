@@ -5,11 +5,14 @@ Student Number : 9932120
 
 */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Dijkstra {
-    public static Scanner input = new Scanner(System.in);
+    //public static Scanner input = new Scanner(System.in);
 
     static class MinHeap{
         int allCapacity;
@@ -176,7 +179,6 @@ public class Dijkstra {
         }
 
         public void showMap(HeapNode[] heapNodes, int source){
-            System.out.println("\n");
             for (int i = 0; i < vertices; i++) {
                 System.out.println("Start from " + source + " to vertex " + i + " Minimum Distance " + heapNodes[i].distance);
             }
@@ -200,32 +202,30 @@ public class Dijkstra {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
-        System.out.print("Please enter the number of Vertices : ");
-        int vertices = input.nextInt();
+        FileInputStream fis = new FileInputStream("/Users/alirahimi/Documents/GitHub/DS-Project/src/input2.txt");
 
-        System.out.print("Please enter the number of Lines : ");
-        int lines = input.nextInt();
+        Scanner input = new Scanner(fis);
+        String firstLine = input.nextLine();
 
-        System.out.print("Please enter the source Vertex: ");
-        int source = input.nextInt();
-        input.nextLine();
+        firstLine.trim();
+        String[] dataFirstLine = firstLine.split(" ");
+
+        int vertices = Integer.parseInt(dataFirstLine[0]);
+        int source = Integer.parseInt(dataFirstLine[2]);
 
         Map map = new Map(vertices);
-        int counter = 1;
-        for (int i = 0; i < lines; i++){
-            System.out.print("Please enter data Number " + counter + " in form (sorce destination weight) : ");
-            String data = input.nextLine();
 
+        while (input.hasNextLine()){
+            String data = input.nextLine();
             String[] splinted = data.split(" ");
             int _source = Integer.parseInt(splinted[0]);
             int _destination = Integer.parseInt(splinted[1]);
             int _weight = Integer.parseInt(splinted[2]);
             map.addNodeToMap(_source, _destination, _weight);
-            counter++;
-        }
 
+        }
         map.findMinimumDistance(source);
     }
 }
